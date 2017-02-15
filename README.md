@@ -10,7 +10,7 @@ You must provide the path to the csv file you downloaded from the met, a directo
 
 An example on how to run the script to download all the peices created by Claude Monet is below:
 
-'python met_download.py --csv=/path/to/met/csv.csv --out=some_directory --artist="Claude Monet"'
+`python met_download.py --csv=/path/to/met/csv.csv --out=some_directory --artist="Claude Monet"`
 
 
 
