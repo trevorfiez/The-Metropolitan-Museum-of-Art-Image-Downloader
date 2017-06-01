@@ -7,10 +7,12 @@ import getopt
 import csv
 import os
 
-from unidecode import unidecode
 
 def check_artists(artist, artists):
-	return artist in artists
+    if (len(artists) == 0):
+        return True
+    else:
+	    return artist in artists
 
 def check_types(piece_type, types):
 	if (len(types) == 0):
@@ -43,60 +45,73 @@ def match_lines(met_csv, artists, types, list_file):
 	return lines
 	
 
-def download_lines(lines, out_dir):
-	image_names = []
+def download_lines(lines, out_dir, met_csv):
+    image_names = []
 
-	if not os.path.exists(out_dir):
-		os.path.makedirs(out_dir)
-	
-	for line in lines:
-		res = ""
-		try:
-			res = urllib2.urlopen('http://www.metmuseum.org/art/collection/search/' + line[3].strip())
-		except urllib2.URLError, e:
-			image_names.append(None)
-			print("URL Error")
-			continue
-	
-		html = res.read()
+    
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
 
-		offset = html.find("utility-menu__item utility-menu__item--download")
+    with open(os.path.join(out_dir, "piece_info.csv"), 'wb') as csv_file:
+        im_writer = csv.writer(csv_file, delimiter=',')
 
-		print(offset)
-		if (offset == -1):
-			image_names.append(None)
-			continue
-		offset = html[offset:].find('http') + offset
-		end = html[offset:].find('.jpg') + offset + 4
+        for row in met_csv:
+            im_writer.writerow(row + ['Image Location'])
+            break
 
-		if (end - offset > 300):
-			image_names.append(None)
-			print("URL Error")
-			continue
+        for line in lines:
+            res = ""
+            try:
+                res = urllib2.urlopen('http://www.metmuseum.org/art/collection/search/' + line[3].strip())
+            except urllib2.URLError, e:
+                image_names.append(None)
+                print("URL Error")
+                continue
 
-		image_link = html[offset:end]
-		print(image_link)
+            html = res.read()
 
-		image_name = image_link.split('/')[-1]
+            offset = html.find("utility-menu__item utility-menu__item--download")
 
-		image_path = os.path.join(out_dir, image_name)
+            print(offset)
+            if (offset == -1):
+                image_names.append(None)
+                continue
+            offset = html[offset:].find('http') + offset
+            end = html[offset:].find('.jpg') + offset + 4
 
-		image_file = ""
-		try:
-			image_file = urllib2.urlopen(image_link)
-		except urllib2.URLError, e:
-			image_names.append(None)
-			print("URL error")
-			continue		
+            if (end - offset > 300):
+                image_names.append(None)
+                print("URL Error")
+                continue
 
-		with open(image_path, 'wb') as output:
-			output.write(image_file.read())
+            image_link = html[offset:end]
+            print(image_link)
 
-		image_names.append(image_path)
+            image_name = image_link.split('/')[-1]
 
-		print(image_link)
+            image_path = os.path.join(out_dir, image_name)
 
-	return image_names
+            image_file = ""
+            try:
+                image_file = urllib2.urlopen(image_link)
+            except urllib2.URLError, e:
+                image_names.append(None)
+                print("URL error")
+                continue		
+
+            with open(image_path, 'wb') as output:
+                output.write(image_file.read())
+
+            image_names.append(image_path)
+
+            if (image_names[-1] == None):
+                continue
+
+            im_writer.writerow(line + [image_names[-1]])
+
+            print(image_link)
+
+    return image_names
 		
 
 def main(argv):
@@ -134,21 +149,9 @@ def main(argv):
 
 	
 
-	painting_names = download_lines(csv_lines, out_dir)
+	download_lines(csv_lines, out_dir, met_csv)
 
-	with open(os.path.join(out_dir, "piece_info.csv"), 'wb') as csv_file:
-		im_writer = csv.writer(csv_file, delimiter=',')
-
-		for row in met_csv:
-			im_writer.writerow(row + ['Image Location'])
-			break
-
-		for i, row in enumerate(csv_lines):
-			if (painting_names[i] == None):
-				continue
-			im_writer.writerow(row + [painting_names[i]])
-
-	return
+	
 
 
 if __name__ == "__main__":
