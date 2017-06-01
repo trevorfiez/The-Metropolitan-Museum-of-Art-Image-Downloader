@@ -1,4 +1,4 @@
-# Met Images #
+# Download Met Images #
 
 Script to download Met painting images by artist name, type, or a list of object numbers. Requires that you have already
  downloaded the entire csv file created by The Met which can be downloaded here: https://github.com/metmuseum/openaccess.
