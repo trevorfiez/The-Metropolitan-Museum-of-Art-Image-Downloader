@@ -1,4 +1,4 @@
-# Download Met Images #
+# The Met Image Downloader #
 
 Script to download Met painting images by artist name, type, or a list of object numbers. Requires that you have already
  downloaded the entire csv file created by The Met which can be downloaded here: https://github.com/metmuseum/openaccess.
@@ -11,6 +11,8 @@ in, and then copy the ascension number and paste it into a text file. Each line 
 many of the pieces are not public domain, I recommend you select the public domain artworks filter.
 
 An example downloading paintings using the ascension number is the `paintings.txt` file.
+
+If you do anything cool with the images you download, I would love to hear about it! Email me if you get the chance.
 
 ## How to run the program ##
 
