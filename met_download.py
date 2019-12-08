@@ -70,7 +70,7 @@ def download_lines(lines, out_dir, met_csv):
 
             html = res.read()
 
-            offset = html.find("utility-menu__item utility-menu__item--download")
+            offset = html.find("artwork__interaction artwork__interaction--download")
 
             print(offset)
             if (offset == -1):
