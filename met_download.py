@@ -6,6 +6,7 @@ import sys
 import getopt
 import csv
 import os
+import httplib
 from selenium import webdriver
 
 
@@ -97,7 +98,7 @@ def download_lines(lines, out_dir, met_csv):
             image_file = ""
             try:
                 image_file = urllib2.urlopen(image_link)
-            except urllib2.URLError, e:
+            except (urllib2.URLError, httplib.InvalidURL), e:
                 image_names.append(None)
                 print("URL error")
                 continue		
