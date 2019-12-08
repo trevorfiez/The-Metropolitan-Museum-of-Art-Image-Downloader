@@ -6,6 +6,7 @@ import sys
 import getopt
 import csv
 import os
+from selenium import webdriver
 
 
 def check_artists(artist, artists):
@@ -59,16 +60,18 @@ def download_lines(lines, out_dir, met_csv):
             im_writer.writerow(row + ['Image Location'])
             break
 
+        # Note: you will need geckodriver.
+        # See https://pypi.org/project/selenium.
+        driver = webdriver.Firefox()
         for line in lines:
             res = ""
             try:
-                res = urllib2.urlopen('http://www.metmuseum.org/art/collection/search/' + line[3].strip())
+                driver.get('http://www.metmuseum.org/art/collection/search/' + line[3].strip())
+                html = driver.page_source
             except urllib2.URLError, e:
                 image_names.append(None)
                 print("URL Error")
                 continue
-
-            html = res.read()
 
             offset = html.find("artwork__interaction artwork__interaction--download")
 
