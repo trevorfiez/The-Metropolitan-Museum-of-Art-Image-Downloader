@@ -173,6 +173,13 @@ def main(argv):
 		elif opt in ("--is_timeline_work", "-w"):
 			is_timeline_work = arg
 
+	# Validations
+	if met_csv_file == "": 
+		print("Please specify the CSV file from the Met: --csv=Location\n")
+		return
+	if out_dir == "": 
+		print("Please specify output location: --out=Location\n")
+		return
 	if not os.path.exists(out_dir):
 		os.makedirs(out_dir)
 
